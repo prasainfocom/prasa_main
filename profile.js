@@ -35,7 +35,7 @@ document.getElementById("logout")?.addEventListener("click", async function () {
         localStorage.setItem("redirectTo", "userForm"); // This sets where to go after next login
         
         // Send logout request to server to invalidate token
-        const response = await fetch("https://prasa-backend-final.vercel.app/api/logout", {
+        const response = await fetch("https://prasa-backend.vercel.app/api/logout", {
             method: "POST",
             headers: {
                 "Authorization": `Bearer ${token}`,
@@ -64,7 +64,7 @@ document.getElementById("logout")?.addEventListener("click", async function () {
     // ✅ Profile Fetching Function (Runs Only on Profile Page)
     async function fetchUserProfile() {
         try {
-            const response = await fetch(`https://prasa-backend-final.vercel.app/api/profile/${email}`, {
+            const response = await fetch(`https://prasa-backend.vercel.app/api/profile/${email}`, {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${token}` }
             });
