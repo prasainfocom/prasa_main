@@ -553,8 +553,8 @@ if (userForm) {
         });
     }
 
-    // Qualification Form
-    if (qualificationForm) {
+     // Qualification Form
+     if (qualificationForm) {
         console.log("Qualification form found");
         let formChanged = false;
         // Function to validate date range (fromDate should be before toDate)
@@ -601,7 +601,7 @@ if (userForm) {
     
         // Navigate back to experience
         document.getElementById('backToExperience').addEventListener('click', () => {
-            window.location.href = 'experience.html';
+            window.location.href = 'experience_form.html';
         });
     
         // Submit all data
@@ -682,41 +682,34 @@ if (userForm) {
             }
     
             // Gather all certification entries
-const certificationEntries = document.querySelectorAll('.certification-entry');
-const certificationName = [];
-const certFromDate = [];
-const certToDate = [];
-
-certificationEntries.forEach(entry => {
-    const certNameInput = entry.querySelector('input[name="certificationName[]"]');
-    const certFromInput = entry.querySelector('input[name="certFromDate[]"]');
-    const certToInput = entry.querySelector('input[name="certToDate[]"]');
+            const certificationEntries = document.querySelectorAll('.certification-entry');
+            const certificationName = [];
+            const certFromDate = [];
+            const certToDate = [];
     
-    if (certNameInput && certFromInput && certToInput) {
-        const certNameValue = certNameInput.value.trim();
-        const certFromValue = certFromInput.value;
-        const certToValue = certToInput.value;
-        
-        // Only validate and push if at least one field has a value
-        if (certNameValue || certFromValue || certToValue) {
-            // If certification name is empty but dates are filled, don't include
-            if (!certNameValue && (certFromValue || certToValue)) {
-                alert('Please enter a certification name if you provide dates.');
-                return;
-            }
-            
-            // Validate Date Range only if both dates are provided
-            if (certFromValue && certToValue && !isValidDateRange(certFromValue, certToValue)) {
-                alert(`Invalid date range for ${certNameValue || 'the certification'}. "From" date must be before "To" date.`);
-                return;
-            }
-            
-            certificationName.push(certNameValue || null);
-            certFromDate.push(certFromValue || null);
-            certToDate.push(certToValue || null);
-        }
-    }
-});
+            certificationEntries.forEach(entry => {
+                const certNameInput = entry.querySelector('input[name="certificationName[]"]');
+                const certFromInput = entry.querySelector('input[name="certFromDate[]"]');
+                const certToInput = entry.querySelector('input[name="certToDate[]"]');
+                
+                if (certNameInput && certFromInput && certToInput) {
+                    const certNameValue = certNameInput.value.trim();
+                    const certFromValue = certFromInput.value;
+                    const certToValue = certToInput.value;
+                    
+                    if (certNameValue && certFromValue && certToValue) {
+                        certificationName.push(certNameValue);
+                        certFromDate.push(certFromValue);
+                        certToDate.push(certToValue);
+    
+                        // Validate Date Range
+                        if (!isValidDateRange(certFromValue, certToValue)) {
+                            alert(`Invalid date range for ${certNameValue}. "From" date must be before "To" date.`);
+                            return;
+                        }
+                    }
+                }
+            });
     
             // Get skills
             const skillsInput = document.getElementById('skills');
@@ -1279,6 +1272,7 @@ function setupRadioDependencies() {
     });
 }
 
+
 // Function to fetch user data including qualifications
 function fetchUserDataqualification() {
     const token = localStorage.getItem("token");
@@ -1459,6 +1453,7 @@ function addNewQualificationEntry(qual = {}) {
     qualificationFields.appendChild(newEntry);
 }
 
+// Helper function to add new certification entry
 function addNewCertificationEntry(cert = {}) {
     const certificationFields = document.getElementById("certificationFields");
     if (!certificationFields) return;
@@ -1483,14 +1478,14 @@ function addNewCertificationEntry(cert = {}) {
             <div class="input-group">
                 <i class="fas fa-calendar-alt"></i>
                 <input type="text" name="certFromDate[]" placeholder="Start Date" 
-                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'"
-                       value="${formatDateForInput(cert.from_date) || ''}">
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(cert.from_date) || ''}">
             </div>
             <div class="input-group">
                 <i class="fas fa-calendar-alt"></i>
                 <input type="text" name="certToDate[]" placeholder="End Date" 
-                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'"
-                       value="${formatDateForInput(cert.to_date) || ''}">
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(cert.to_date) || ''}">
             </div>
         </div>
         <button type="button" class="remove-certification">Remove</button>
@@ -1498,7 +1493,241 @@ function addNewCertificationEntry(cert = {}) {
     
     // Add remove functionality
     newEntry.querySelector('.remove-certification').addEventListener('click', () => {
-        newEntry.remove();
+        if (document.querySelectorAll('.certification-entry').length > 1) {
+            newEntry.remove();
+        } else {
+            alert("You need to have at least one certification entry");
+        }
+    });
+    
+    certificationFields.appendChild(newEntry);
+}
+
+// Function to fetch user data including qualifications
+function fetchUserDataqualification() {
+    const token = localStorage.getItem("token");
+    const email = localStorage.getItem("userEmail");
+    
+    if (!token || !email) return;
+
+    fetch(`https://prasa-backend.vercel.app/api/user-data`, {
+        headers: {
+            "Authorization": `Bearer ${token}`
+        }
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log("Fetched all user data:", data);
+        populateQualificationForm({
+            qualifications: data.qualifications || [],
+            skills: data.skills || "",
+            certifications: data.certifications || []
+        });
+    })
+    .catch(error => {
+        console.error("Error fetching user data:", error);
+    });
+}
+
+// Function to populate qualification form with existing data
+function populateQualificationForm(data) {
+    const qualificationForm = document.getElementById("qualificationForm");
+    const qualificationFields = document.getElementById("qualificationFields");
+    const certificationFields = document.getElementById("certificationFields");
+    
+    if (!qualificationForm || !qualificationFields || !certificationFields) {
+        console.error("Form elements not found");
+        return;
+    }
+
+    // Clear any existing entries
+    qualificationFields.innerHTML = "";
+    certificationFields.innerHTML = "";
+    
+    // Check if we have qualification data to populate
+    const qualifications = data.qualifications || [];
+    console.log("Qualification data to populate:", qualifications);
+    
+    // Check if we have certification data to populate
+    const certifications = data.certifications || [];
+    console.log("Certification data to populate:", certifications);
+    
+    // Populate skills
+    if (data.skills) {
+        document.getElementById('skills').value = data.skills;
+    }
+    
+    // Add qualification entries
+    if (qualifications.length === 0) {
+        addNewQualificationEntry();
+    } else {
+        qualifications.forEach((qual) => {
+            addNewQualificationEntry(qual);
+        });
+    }
+    
+    // Add certification entries
+    if (certifications.length === 0) {
+        addNewCertificationEntry();
+    } else {
+        certifications.forEach((cert) => {
+            addNewCertificationEntry(cert);
+        });
+    }
+}
+
+// Helper function to add new qualification entry
+function addNewQualificationEntry(qual = {}) {
+    const qualificationFields = document.getElementById("qualificationFields");
+    if (!qualificationFields) return;
+
+    const newEntry = document.createElement("div");
+    newEntry.className = "qualification-entry";
+    
+    // Format dates for display
+    const formatDateForInput = (dateStr) => {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0];
+    };
+
+    newEntry.innerHTML = `
+        <div class="input-group">
+            <i class="fas fa-graduation-cap"></i>
+            <select name="educationType[]" required>
+                <option value="">Select Education Type</option>
+                <option value="SSC" ${qual.education_type === 'SSC' ? 'selected' : ''}>SSC</option>
+                <option value="HSC" ${qual.education_type === 'HSC' ? 'selected' : ''}>HSC</option>
+                <option value="ITI" ${qual.education_type === 'ITI' ? 'selected' : ''}>ITI</option>
+                <option value="Diploma" ${qual.education_type === 'Diploma' ? 'selected' : ''}>Diploma</option>
+                <option value="Graduation" ${qual.education_type === 'Graduation' ? 'selected' : ''}>Graduation</option>
+                <option value="Post Graduation" ${qual.education_type === 'Post Graduation' ? 'selected' : ''}>Post Graduation</option>
+                <option value="Others" ${qual.education_type === 'Others' ? 'selected' : ''}>Others</option>
+            </select>
+        </div>
+        <div class="date-range">
+            <div class="input-group">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="text" name="eduFromDate[]" placeholder="Start Date" 
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(qual.from_date) || ''}">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="text" name="eduToDate[]" placeholder="End Date" 
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(qual.to_date) || ''}">
+            </div>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-school"></i>
+            <input type="text" name="instituteName[]" placeholder="Institute Name" required 
+                   value="${qual.institute_name || ''}">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-book"></i>
+            <input type="text" name="specialization[]" placeholder="Specialization" 
+                   value="${qual.specialization || ''}">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-certificate"></i>
+            <input type="text" name="nacAccretion[]" placeholder="NAC Accretion" 
+                   value="${qual.nac_accretion || ''}">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-university"></i>
+            <input type="text" name="boardUniversity[]" placeholder="Board/University" required 
+                   value="${qual.board_university || ''}">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-clock"></i>
+            <select name="eduType[]" required>
+                <option value="">Select Type</option>
+                <option value="Full Time" ${qual.edu_type === 'Full Time' ? 'selected' : ''}>Full Time</option>
+                <option value="Part Time" ${qual.edu_type === 'Part Time' ? 'selected' : ''}>Part Time</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-star"></i>
+            <input type="text" name="score[]" placeholder="Score" required 
+                   value="${qual.score || ''}">
+        </div>
+        <div class="input-group">
+            <i class="fas fa-tasks"></i>
+            <select name="status[]" required>
+                <option value="">Select Status</option>
+                <option value="Completed" ${qual.status === 'Completed' ? 'selected' : ''}>Completed</option>
+                <option value="Not Completed" ${qual.status === 'Not Completed' ? 'selected' : ''}>Not Completed</option>
+            </select>
+        </div>
+        <div class="input-group">
+            <i class="fas fa-file-alt"></i>
+            <select name="proofsSubmitted[]" required>
+                <option value="">Proofs Submitted?</option>
+                <option value="Yes" ${qual.proofs_submitted === 'Yes' ? 'selected' : ''}>Yes</option>
+                <option value="No" ${qual.proofs_submitted === 'No' ? 'selected' : ''}>No</option>
+            </select>
+        </div>
+        <button type="button" class="remove-qualification">Remove</button>
+    `;
+    
+    // Add remove functionality
+    newEntry.querySelector('.remove-qualification').addEventListener('click', () => {
+        if (document.querySelectorAll('.qualification-entry').length > 1) {
+            newEntry.remove();
+        } else {
+            alert("You need to have at least one qualification entry");
+        }
+    });
+    
+    qualificationFields.appendChild(newEntry);
+}
+
+// Helper function to add new certification entry
+function addNewCertificationEntry(cert = {}) {
+    const certificationFields = document.getElementById("certificationFields");
+    if (!certificationFields) return;
+
+    const newEntry = document.createElement("div");
+    newEntry.className = "certification-entry";
+    
+    // Format dates for display
+    const formatDateForInput = (dateStr) => {
+        if (!dateStr) return '';
+        const date = new Date(dateStr);
+        return date.toISOString().split('T')[0];
+    };
+
+    newEntry.innerHTML = `
+        <div class="input-group">
+            <i class="fas fa-certificate"></i>
+            <input type="text" name="certificationName[]" placeholder="Certification Name" 
+                   value="${cert.certification_name || ''}">
+        </div>
+        <div class="date-range">
+            <div class="input-group">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="text" name="certFromDate[]" placeholder="Start Date" 
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(cert.from_date) || ''}">
+            </div>
+            <div class="input-group">
+                <i class="fas fa-calendar-alt"></i>
+                <input type="text" name="certToDate[]" placeholder="End Date" 
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(cert.to_date) || ''}">
+            </div>
+        </div>
+        <button type="button" class="remove-certification">Remove</button>
+    `;
+    
+    // Add remove functionality
+    newEntry.querySelector('.remove-certification').addEventListener('click', () => {
+        if (document.querySelectorAll('.certification-entry').length > 1) {
+            newEntry.remove();
+        } else {
+            alert("You need to have at least one certification entry");
+        }
     });
     
     certificationFields.appendChild(newEntry);
