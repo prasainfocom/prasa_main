@@ -26,11 +26,11 @@ if (registerForm) {
 
         if (!isValidEmail(email)) {
             alert("Please enter a valid email address.");
-            return;
+            return;3
         }
 
         try {
-            const response = await fetch("https://prahas-backend.vercel.app/api/register", {
+            const response = await fetch("https://prasa-backend.vercel.app/api/register", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ username, email, password })
@@ -66,7 +66,7 @@ if (loginForm) {
         
         try {
             // ✅ Step 1: Send login request
-            const response = await fetch("https://prahas-backend.vercel.app/api/login", {
+            const response = await fetch("https://prasa-backend.vercel.app/api/login", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ email, password })
@@ -81,7 +81,7 @@ if (loginForm) {
                 console.log("Login successful, stored email:", result.email);
                 
                 // ✅ Step 3: Check if user exists in user_data
-                const profileResponse = await fetch(`https://prahas-backend.vercel.app/api/profile/${email}`, {
+                const profileResponse = await fetch(`https://prasa-backend.vercel.app/api/profile/${email}`, {
                     method: "GET",
                     headers: { "Authorization": `Bearer ${result.token}` }
                 });
@@ -232,7 +232,7 @@ if (userForm) {
         }
 
         try {
-            const response = await fetch("https://prahas-backend.vercel.app/api/submit-form", {
+            const response = await fetch("https://prasa-backend.vercel.app/api/submit-form", {
                 method: "POST",
                 headers: { 
                     "Content-Type": "application/json",
@@ -379,7 +379,7 @@ if (userForm) {
             }
     
             try {
-                const response = await fetch("https://prahas-backend.vercel.app/api/submit-family", {
+                const response = await fetch("https://prasa-backend.vercel.app/api/submit-family", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json",
@@ -527,7 +527,7 @@ if (userForm) {
             if (!checkRequiredFields(experienceForm)) return;
     
             try {
-                const response = await fetch("https://prahas-backend.vercel.app/api/submit-experience", {
+                const response = await fetch("https://prasa-backend.vercel.app/api/submit-experience", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json",
@@ -728,7 +728,7 @@ if (userForm) {
             if (!checkRequiredFields(qualificationForm)) return;
     
             try {
-                const response = await fetch("https://prahas-backend.vercel.app/api/submit-qualification", {
+                const response = await fetch("https://prasa-backend.vercel.app/api/submit-qualification", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json",
@@ -1074,7 +1074,7 @@ if (medicalInfoForm) {
         try {
             console.log("Sending medical data:", formData); // Log the data being sent
             
-            const response = await fetch("https://prahas-backend.vercel.app/api/submit-medical-info", {
+            const response = await fetch("https://prasa-backend.vercel.app/api/submit-medical-info", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -1129,7 +1129,7 @@ function fetchUserMedicalInfo() {
     
     if (!token || !email) return;
 
-    fetch(`https://prahas-backend.vercel.app/api/user-data`, {
+    fetch(`https://prasa-backend.vercel.app/api/user-data`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -1279,7 +1279,7 @@ function fetchUserDataqualification() {
     
     if (!token || !email) return;
 
-    fetch(`https://prahas-backend.vercel.app/api/user-data`, {
+    fetch(`https://prasa-backend.vercel.app/api/user-data`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -1509,7 +1509,7 @@ function fetchUserDataqualification() {
     
     if (!token || !email) return;
 
-    fetch(`https://prahas-backend.vercel.app/api/user-data`, {
+    fetch(`https://prasa-backend.vercel.app/api/user-data`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -1738,7 +1738,7 @@ function fetchUserDataex() {
     
     if (!token || !email) return;
 
-    fetch(`https://prahas-backend.vercel.app/api/user-data`, {
+    fetch(`https://prasa-backend.vercel.app/api/user-data`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
@@ -1866,7 +1866,7 @@ function addNewExperienceEntry(exp = {}) {
         if (!token) return;
         
         try {
-            const response = await fetch("https://prahas-backend.vercel.app/api/user-data", {
+            const response = await fetch("https://prasa-backend.vercel.app/api/user-data", {
                 method: "GET",
                 headers: { "Authorization": `Bearer ${token}` }
             });
