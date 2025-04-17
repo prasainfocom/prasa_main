@@ -681,41 +681,35 @@ if (userForm) {
                 return;
             }
     
+            // Gather all certification entries
             const certificationEntries = document.querySelectorAll('.certification-entry');
-const certificationName = [];
-const certFromDate = [];
-const certToDate = [];
-
-certificationEntries.forEach(entry => {
-    const certNameInput = entry.querySelector('input[name="certificationName[]"]');
-    const certFromInput = entry.querySelector('input[name="certFromDate[]"]');
-    const certToInput = entry.querySelector('input[name="certToDate[]"]');
+            const certificationName = [];
+            const certFromDate = [];
+            const certToDate = [];
     
-    if (certNameInput && certFromInput && certToInput) {
-        const certNameValue = certNameInput.value.trim();
-        const certFromValue = certFromInput.value;
-        const certToValue = certToInput.value;
-        
-        // Only validate and push if at least one field has a value
-        if (certNameValue || certFromValue || certToValue) {
-            // If certification name is empty but dates are filled, don't include
-            if (!certNameValue && (certFromValue || certToValue)) {
-                alert('Please enter a certification name if you provide dates.');
-                return;
-            }
-            
-            // Validate Date Range only if both dates are provided
-            if (certFromValue && certToValue && !isValidDateRange(certFromValue, certToValue)) {
-                alert(`Invalid date range for ${certNameValue || 'the certification'}. "From" date must be before "To" date.`);
-                return;
-            }
-            
-            certificationName.push(certNameValue || null);
-            certFromDate.push(certFromValue || null);
-            certToDate.push(certToValue || null);
-        }
-    }
-});
+            certificationEntries.forEach(entry => {
+                const certNameInput = entry.querySelector('input[name="certificationName[]"]');
+                const certFromInput = entry.querySelector('input[name="certFromDate[]"]');
+                const certToInput = entry.querySelector('input[name="certToDate[]"]');
+                
+                if (certNameInput && certFromInput && certToInput) {
+                    const certNameValue = certNameInput.value.trim();
+                    const certFromValue = certFromInput.value;
+                    const certToValue = certToInput.value;
+                    
+                    if (certNameValue && certFromValue && certToValue) {
+                        certificationName.push(certNameValue);
+                        certFromDate.push(certFromValue);
+                        certToDate.push(certToValue);
+    
+                        // Validate Date Range
+                        if (!isValidDateRange(certFromValue, certToValue)) {
+                            alert(`Invalid date range for ${certNameValue}. "From" date must be before "To" date.`);
+                            return;
+                        }
+                    }
+                }
+            });
     
             // Get skills
             const skillsInput = document.getElementById('skills');
@@ -1483,14 +1477,14 @@ function addNewCertificationEntry(cert = {}) {
             <div class="input-group">
                 <i class="fas fa-calendar-alt"></i>
                 <input type="text" name="certFromDate[]" placeholder="Start Date" 
-                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'"
-                       value="${formatDateForInput(cert.from_date) || ''}">
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(cert.from_date) || ''}">
             </div>
             <div class="input-group">
                 <i class="fas fa-calendar-alt"></i>
                 <input type="text" name="certToDate[]" placeholder="End Date" 
-                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'"
-                       value="${formatDateForInput(cert.to_date) || ''}">
+                       onfocus="(this.type='date')" onblur="if(!this.value)this.type='text'" 
+                       required value="${formatDateForInput(cert.to_date) || ''}">
             </div>
         </div>
         <button type="button" class="remove-certification">Remove</button>
@@ -1498,7 +1492,11 @@ function addNewCertificationEntry(cert = {}) {
     
     // Add remove functionality
     newEntry.querySelector('.remove-certification').addEventListener('click', () => {
-        newEntry.remove();
+        if (document.querySelectorAll('.certification-entry').length > 1) {
+            newEntry.remove();
+        } else {
+            alert("You need to have at least one certification entry");
+        }
     });
     
     certificationFields.appendChild(newEntry);
