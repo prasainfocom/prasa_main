@@ -26,7 +26,7 @@ if (registerForm) {
 
         if (!isValidEmail(email)) {
             alert("Please enter a valid email address.");
-            return;3
+            return;
         }
 
         try {
@@ -553,8 +553,8 @@ if (userForm) {
         });
     }
 
-     // Qualification Form
-     if (qualificationForm) {
+    // Qualification Form
+    if (qualificationForm) {
         console.log("Qualification form found");
         let formChanged = false;
         // Function to validate date range (fromDate should be before toDate)
@@ -1271,7 +1271,6 @@ function setupRadioDependencies() {
         }
     });
 }
-
 
 // Function to fetch user data including qualifications
 function fetchUserDataqualification() {
