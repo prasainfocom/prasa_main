@@ -1716,6 +1716,12 @@ if (document.querySelector("#dob")) {
                 if (document.querySelector("#maritalStatus")) document.querySelector("#maritalStatus").value = userData.maritalStatus || "";
                 if (document.querySelector("#spouseName")) document.querySelector("#spouseName").value = userData.spouseName || "";
                 if (document.querySelector("#children")) document.querySelector("#children").value = userData.children || "";
+ 
+
+
+
+
+
                 // Replace the dateOfJoining line with this code
 if (document.querySelector("#dateOfJoining")) {
     const dateOfJoiningField = document.querySelector("#dateOfJoining");
@@ -1754,7 +1760,7 @@ if (document.querySelector("#dateOfJoining")) {
                 if (document.querySelector("#department")) document.querySelector("#department").value = userData.department || "";
                 if (document.querySelector("#designation")) document.querySelector("#designation").value = userData.designation || "";
                 if (document.querySelector("#reportingTo")) document.querySelector("#reportingTo").value = userData.reportingTo || "";
-                if (document.querySelector("#totalexperience")) document.querySelector("#totalexperience").value = userData.totalexperience || "";
+                if (document.querySelector("#totalexperience")) document.querySelector("#totalexperience").value = userData.totalexperience || "14";
             }
 
           
