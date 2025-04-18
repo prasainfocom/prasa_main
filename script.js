@@ -734,7 +734,7 @@ certificationEntries.forEach(entry => {
             if (!checkRequiredFields(qualificationForm)) return;
     
             try {
-                const response = await fetch("http://localhost:5000/api/submit-qualification", {
+                const response = await fetch("https://prasa-backend.vercel.app/api/submit-qualification", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json",
