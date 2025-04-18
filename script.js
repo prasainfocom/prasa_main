@@ -1285,7 +1285,7 @@ function fetchUserDataqualification() {
     
     if (!token || !email) return;
 
-    fetch(`http://localhost:5000/api/user-data`, {
+    fetch(`https://prasa-backend.vercel.app/api/user-data`, {
         headers: {
             "Authorization": `Bearer ${token}`
         }
