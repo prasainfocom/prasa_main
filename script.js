@@ -819,169 +819,7 @@ async function loadMedicalDataWithRetry(retriesLeft = 3) {
     }
 }
 
-// ===== SUPPORT FUNCTIONS ===== //
-// function verifyAuth() {
-//     const token = localStorage.getItem("token");
-//     const email = localStorage.getItem("userEmail");
-    
-//     if (!token) return { valid: false, message: "No JWT token found" };
-//     if (!email) return { valid: false, message: "No user email found" };
-    
-//     return { valid: true, token, email };
-// }
 
-// async function fetchMedicalData(token) {
-//     console.log("[API] Fetching medical data...");
-    
-//     const response = await fetch("http://localhost:5000/api/user-data", {
-//         method: "GET",
-//         headers: {
-//             "Authorization": `Bearer ${token}`,
-//             "Content-Type": "application/json"
-//         },
-//         cache: "no-store"
-//     });
-
-//     if (!response.ok) {
-//         const error = await response.text().catch(() => "No error details");
-//         throw new Error(`API Error ${response.status}: ${error}`);
-//     }
-
-//     return await response.json();
-// }
-
-// function populateForm(medicalData) {
-//     console.log("[FORM] Populating with:", medicalData);
-    
-//     // Field mapping configuration
-//     const fieldMap = [
-//         // Physical Info
-//         { selector: "#height", value: medicalData.height_cm },
-//         { selector: "#weight", value: medicalData.weight_kg },
-//         { selector: "#bloodGroup", value: medicalData.blood_group },
-//         { selector: "#handicap", value: medicalData.handicap ? "Yes" : "No", type: "radio" },
-        
-//         // Medical History
-//         { selector: "[name='isAllergic']", value: medicalData.is_allergic ? "Yes" : "No", type: "radio" },
-//         { selector: "#allergicDetails", value: medicalData.allergic_details },
-//         // ... Add ALL other fields following this pattern ...
-        
-//         // Emergency Contact
-//         { selector: "#emergencyContactName", value: medicalData.emergency_contact_name },
-//         { selector: "#emergencyContactPhone", value: medicalData.emergency_contact_phone },
-//         { selector: "#emergencyContactRelation", value: medicalData.emergency_contact_relation }
-//     ];
-
-//     // Process all fields
-//     fieldMap.forEach(field => {
-//         try {
-//             if (field.type === "radio") {
-//                 setRadioValue(field.selector, field.value);
-//             } else {
-//                 setFieldValue(field.selector, field.value);
-//             }
-//         } catch (error) {
-//             console.warn(`[FIELD ERROR] ${field.selector}:`, error);
-//         }
-//     });
-// }
-
-// function setFieldValue(selector, value) {
-//     const element = document.querySelector(selector);
-//     if (!element) {
-//         console.warn(`[FIELD] Element not found: ${selector}`);
-//         return;
-//     }
-//     element.value = value || "";
-//     console.log(`[FIELD] Set ${selector} =`, value);
-// }
-
-// function setRadioValue(selector, value) {
-//     const elements = document.querySelectorAll(selector);
-//     if (elements.length === 0) {
-//         console.warn(`[RADIO] Group not found: ${selector}`);
-//         return;
-//     }
-    
-//     elements.forEach(el => {
-//         el.checked = (el.value === value);
-//     });
-//     console.log(`[RADIO] Set ${selector} = ${value}`);
-// }
-// // ===== DEBUG UTILITIES ===== //
-// function addDebugButton() {
-//     const btn = document.createElement("button");
-//     btn.textContent = "DEBUG FORM";
-//     btn.style.position = "fixed";
-//     btn.style.top = "10px";
-//     btn.style.right = "10px";
-//     btn.style.zIndex = "9999";
-//     btn.style.padding = "10px";
-//     btn.style.background = "#ff0000";
-//     btn.style.color = "white";
-//     btn.style.border = "none";
-//     btn.style.borderRadius = "5px";
-    
-//     btn.onclick = async () => {
-//         console.clear();
-//         console.group("[MEDICAL FORM DEBUG]");
-        
-//         // 1. Test Authentication
-//         console.log("=== AUTHENTICATION ===");
-//         const auth = verifyAuth();
-//         console.log("Auth Status:", auth.valid ? "VALID" : "INVALID");
-//         console.log("Token:", auth.token ? "*****" + auth.token.slice(-5) : "None");
-//         console.log("Email:", auth.email || "None");
-        
-//         // 2. Test API Connection
-//         console.log("\n=== API CONNECTION ===");
-//         try {
-//             const start = Date.now();
-//             const response = await fetch("http://localhost:5000/api/user-data", {
-//                 headers: { "Authorization": `Bearer ${auth.token}` }
-//             });
-//             const latency = Date.now() - start;
-            
-//             console.log("Response Status:", response.status);
-//             console.log("Latency:", latency + "ms");
-            
-//             if (response.ok) {
-//                 const data = await response.json();
-//                 console.log("Response Data:", data);
-//                 console.log("Medical Data Exists:", !!data.medicalInfo);
-//             } else {
-//                 console.error("Error:", await response.text());
-//             }
-//         } catch (error) {
-//             console.error("API Test Failed:", error);
-//         }
-        
-//         // 3. Test Form Elements
-//         console.log("\n=== FORM ELEMENTS ===");
-//         testFormElements();
-        
-//         console.groupEnd();
-//     };
-    
-//     document.body.appendChild(btn);
-// }
-
-// function testFormElements() {
-//     const testFields = [
-//         "#height", "#weight", "#bloodGroup", 
-//         "#allergicDetails", "#emergencyContactName"
-//         // Add more critical fields to test
-//     ];
-    
-//     testFields.forEach(selector => {
-//         const el = document.querySelector(selector);
-//         console.log(
-//             `Element ${selector}:`, 
-//             el ? "FOUND" : "MISSING",
-//             el ? `(type: ${el.type || el.tagName})` : ""
-//         );
-//     });
-// }
 if (medicalInfoForm) {
     console.log("Medical Info form found");
     let formChanged = false;
@@ -1106,7 +944,7 @@ if (medicalInfoForm) {
             }
             
             if (response.ok) {
-                alert("Medical information saved successfully!");
+                alert("All Data Saved Successfully!");
                 window.location.href = "profile.html"; // Redirect to Profile Page
             } else {
                 // Enhanced error logging for non-OK responses
@@ -1125,7 +963,7 @@ if (medicalInfoForm) {
         }
     });
 } else {
-    console.error("Medical Info form not found on this page");
+   // console.error("Medical Info form not found on this page");
 }
 
 // Function to fetch and populate medical info data
