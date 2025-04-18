@@ -553,7 +553,6 @@ if (userForm) {
         });
     }
 
-    // Qualification Form
     if (qualificationForm) {
         console.log("Qualification form found");
         let formChanged = false;
@@ -601,7 +600,7 @@ if (userForm) {
     
         // Navigate back to experience
         document.getElementById('backToExperience').addEventListener('click', () => {
-            window.location.href = 'experience_form.html';
+            window.location.href = 'experience.html';
         });
     
         // Submit all data
@@ -682,34 +681,41 @@ if (userForm) {
             }
     
             // Gather all certification entries
-            const certificationEntries = document.querySelectorAll('.certification-entry');
-            const certificationName = [];
-            const certFromDate = [];
-            const certToDate = [];
+const certificationEntries = document.querySelectorAll('.certification-entry');
+const certificationName = [];
+const certFromDate = [];
+const certToDate = [];
+
+certificationEntries.forEach(entry => {
+    const certNameInput = entry.querySelector('input[name="certificationName[]"]');
+    const certFromInput = entry.querySelector('input[name="certFromDate[]"]');
+    const certToInput = entry.querySelector('input[name="certToDate[]"]');
     
-            certificationEntries.forEach(entry => {
-                const certNameInput = entry.querySelector('input[name="certificationName[]"]');
-                const certFromInput = entry.querySelector('input[name="certFromDate[]"]');
-                const certToInput = entry.querySelector('input[name="certToDate[]"]');
-                
-                if (certNameInput && certFromInput && certToInput) {
-                    const certNameValue = certNameInput.value.trim();
-                    const certFromValue = certFromInput.value;
-                    const certToValue = certToInput.value;
-                    
-                    if (certNameValue && certFromValue && certToValue) {
-                        certificationName.push(certNameValue);
-                        certFromDate.push(certFromValue);
-                        certToDate.push(certToValue);
-    
-                        // Validate Date Range
-                        if (!isValidDateRange(certFromValue, certToValue)) {
-                            alert(`Invalid date range for ${certNameValue}. "From" date must be before "To" date.`);
-                            return;
-                        }
-                    }
-                }
-            });
+    if (certNameInput && certFromInput && certToInput) {
+        const certNameValue = certNameInput.value.trim();
+        const certFromValue = certFromInput.value;
+        const certToValue = certToInput.value;
+        
+        // Only validate and push if at least one field has a value
+        if (certNameValue || certFromValue || certToValue) {
+            // If certification name is empty but dates are filled, don't include
+            if (!certNameValue && (certFromValue || certToValue)) {
+                alert('Please enter a certification name if you provide dates.');
+                return;
+            }
+            
+            // Validate Date Range only if both dates are provided
+            if (certFromValue && certToValue && !isValidDateRange(certFromValue, certToValue)) {
+                alert(`Invalid date range for ${certNameValue || 'the certification'}. "From" date must be before "To" date.`);
+                return;
+            }
+            
+            certificationName.push(certNameValue || null);
+            certFromDate.push(certFromValue || null);
+            certToDate.push(certToValue || null);
+        }
+    }
+});
     
             // Get skills
             const skillsInput = document.getElementById('skills');
@@ -728,7 +734,7 @@ if (userForm) {
             if (!checkRequiredFields(qualificationForm)) return;
     
             try {
-                const response = await fetch("https://prasa-backend.vercel.app/api/submit-qualification", {
+                const response = await fetch("http://localhost:5000/api/submit-qualification", {
                     method: "POST",
                     headers: { 
                         "Content-Type": "application/json",
