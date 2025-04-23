@@ -1598,7 +1598,7 @@ if (document.querySelector("#dateOfJoining")) {
                 if (document.querySelector("#department")) document.querySelector("#department").value = userData.department || "";
                 if (document.querySelector("#designation")) document.querySelector("#designation").value = userData.designation || "";
                 if (document.querySelector("#reportingTo")) document.querySelector("#reportingTo").value = userData.reportingTo || "";
-                if (document.querySelector("#totalexperience")) document.querySelector("#totalexperience").value = userData.totalexperience || "14";
+                if (document.querySelector("#totalexperience")) document.querySelector("#totalexperience").value = userData.totalexperience || "";
             }
 
           
